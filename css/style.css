@@ -1,0 +1,19 @@
+table {
+    width: 80%;
+    padding: 10px;
+    margin: 10px;
+    
+}
+thead {
+    background-color: rgba(133, 129, 129, 0.696);
+}
+thead > tr,
+th {
+    border: 2px solid black;
+    text-align: center;
+
+}
+tr {
+    padding: 10px;
+    margin: 10px;
+}
