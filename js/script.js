@@ -1,4 +1,4 @@
-import { renderNotesTable, updateSummaryTable } from './renderTable.js';
+import { renderAll, renderNotesTable, updateSummaryTable, renderArchiveNoteTable } from './renderTable.js';
 import { App, Note } from './note.js';
 
 // start of the script
@@ -14,6 +14,4 @@ var notes = [
 ];
 
 var noteApp = new App(notes);
-
-updateSummaryTable(noteApp);
-renderNotesTable(noteApp);
+renderAll(noteApp);

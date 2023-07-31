@@ -1,8 +1,5 @@
-table {
-    width: 80%;
-    padding: 10px;
-    margin: 10px;
-    
+body {
+    width: 90%;
 }
 thead {
     background-color: rgba(133, 129, 129, 0.696);
@@ -11,9 +8,13 @@ thead > tr,
 th {
     border: 2px solid black;
     text-align: center;
-
 }
+
 tr {
     padding: 10px;
     margin: 10px;
+}
+td:not(:first-child),
+th {
+    text-align: center;
 }

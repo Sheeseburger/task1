@@ -4,6 +4,7 @@
         <meta charset="utf-8" />
         <title>Notes</title>
         <meta name="description" content="Notes<" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" href="css/style.css" />
         <link href="https://fonts.googleapis.com/css2?family=Bowlby+One&display=swap" rel="stylesheet" />
         <link
@@ -16,22 +17,8 @@
 
     <body>
         <h1>Notes App</h1>
-
-        <!-- Add Note Form -->
-        <form id="addNoteForm">
-            <label for="content">Content:</label>
-            <input type="text" id="content" required />
-            <label for="category">Category:</label>
-            <select id="category" required>
-                <option value="Task">Task</option>
-                <option value="Random Thought">Random Thought</option>
-                <option value="Idea">Idea</option>
-            </select>
-            <button type="submit">Add Note</button>
-        </form>
-
         <!-- Notes Table -->
-        <table id="notesTable" class="table-success">
+        <table id="notesTable" class="table table-dark table-striped">
             <thead>
                 <tr>
                     <th>Name</th>
@@ -42,13 +29,11 @@
                     <th>Actions</th>
                 </tr>
             </thead>
-            <tbody id="notesTableBody">
-                <!-- JavaScript will populate the table rows here -->
-            </tbody>
+            <tbody id="notesTableBody"></tbody>
         </table>
 
         <!-- Summary Table -->
-        <table id="summaryTable">
+        <table id="summaryTable" class="table table-dark table-striped">
             <thead>
                 <tr>
                     <th>Category</th>
@@ -73,6 +58,19 @@
                     <td id="ideaArchivedCount">0</td>
                 </tr>
             </tbody>
+        </table>
+        <table id="archiveTable" class="table table-dark table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Created</th>
+                    <th>Category</th>
+                    <th>Content</th>
+                    <th>Dates</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="archiveTableBody"></tbody>
         </table>
         <script
             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"

@@ -18,22 +18,28 @@ class App {
         this.notes.push({ id: this.notes.length + this.archivedNotes + 1, createdAt: Date.now(), content, category });
         return this;
     }
-    editNote(id, content, category) {
+    getNote(id) {
+        return this.notes.find((n) => n.id === id);
+    }
+    editNote(id, content, category, name) {
         if (!content || !['Task', 'Idea', 'Random Thought'].includes(category)) return false;
         const note = this.notes.find((n) => n.id === id);
         if (note) {
             note.content = content;
             note.category = category;
+            note.name = name;
         }
         return this;
     }
     removeNote(id) {
         this.notes = this.notes.filter((n) => n.id !== id);
-        console.log(this.notes);
         return this;
     }
+    getArchiveNote(id) {
+        return this.archivedNotes.find((n) => n.id === id);
+    }
     archiveNote(id) {
-        const note = this.notes.find((n) => n.id === id);
+        const note = this.getNote(id);
         if (note) {
             this.notes = this.notes.filter((n) => n.id !== id);
             this.archivedNotes.push(note);
@@ -42,7 +48,7 @@ class App {
     }
 
     unarchiveNote(id) {
-        const note = this.archivedNotes.find((n) => n.id === id);
+        const note = this.getArchiveNote(id);
         if (note) {
             this.archivedNotes = this.archivedNotes.filter((n) => n.id !== id);
             this.notes.push(note);
