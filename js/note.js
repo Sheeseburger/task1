@@ -13,26 +13,37 @@ class App {
         this.notes = notes;
         this.archivedNotes = [];
     }
-    addNote(content, category) {
-        if (!content || !['Task', 'Idea', 'Random Thought'].includes(category)) return false;
-        this.notes.push({ id: this.notes.length + this.archivedNotes + 1, createdAt: Date.now(), content, category });
+    addNote(args) {
+        const { content, category, name } = args;
+        if (!name || !content) throw new Error('Missing name or content');
+        if (!['Task', 'Idea', 'Random Thought'].includes(category)) throw new Error('We dont support this content');
+        this.notes.push({
+            id: this.notes.length + this.archivedNotes + 1,
+            createdAt: Date.now().toLocaleString(),
+            content,
+            category,
+            name,
+        });
         return this;
     }
     getNote(id) {
         return this.notes.find((n) => n.id === id);
     }
-    editNote(id, content, category, name) {
+    editNote(args) {
+        console.log(args);
+        let { id, content, category, noteName } = args;
         if (!content || !['Task', 'Idea', 'Random Thought'].includes(category)) return false;
         const note = this.notes.find((n) => n.id === id);
         if (note) {
             note.content = content;
             note.category = category;
-            note.name = name;
+            note.name = noteName;
         }
         return this;
     }
     removeNote(id) {
         this.notes = this.notes.filter((n) => n.id !== id);
+        this.archivedNotes = this.archivedNotes.filter((n) => n.id !== id);
         return this;
     }
     getArchiveNote(id) {

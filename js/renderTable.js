@@ -1,4 +1,5 @@
 import { App, Note } from './note.js';
+let isEditOpen = false;
 
 // renders Note table
 
@@ -19,19 +20,12 @@ function renderArchiveNoteTable(noteApp) {
         <td class="table-dark">${note.content.substring(0, 15) + '...'}</td>
         <td class="table-dark">${noteApp.getDatesMentioned(note.content)}</td>
         <td>
-          <button class="edit btn btn-warning" id="${note.id}">Edit</button>
           <button class="unarchive btn btn-warning" id="${note.id}">Un archive</button>
           <button class="remove btn btn-warning"id="${note.id}">Remove</button>
         </td>
       `;
 
         notesTableBody.appendChild(row);
-    });
-    document.querySelectorAll('.unarchive').forEach((el) => {
-        el.addEventListener('click', () => {
-            noteApp.unarchiveNote(el.id * 1);
-            renderAll(noteApp);
-        });
     });
 }
 
@@ -41,7 +35,6 @@ function renderNotesTable(noteApp) {
     notesTableBody.innerHTML = '';
 
     noteApp.getActiveNotes().forEach((note) => {
-        // console.log(note);
         const row = document.createElement('tr');
         row.classList.add('table-dark');
         row.innerHTML = `
@@ -62,58 +55,36 @@ function renderNotesTable(noteApp) {
       `;
         notesTableBody.appendChild(row);
     });
-    document.querySelectorAll('.edit').forEach((el) => {
-        el.addEventListener('click', () => {
-            const note = noteApp.getNote(el.id * 1);
-            showEditForm(el, note, noteApp);
-        });
-    });
-
-    // listener for REMOVE
-    document.querySelectorAll('.remove').forEach((el) => {
-        el.addEventListener('click', () => {
-            noteApp.removeNote(el.id * 1);
-            renderAll(noteApp);
-        });
-    });
-    document.querySelectorAll('.archive').forEach((el) => {
-        el.addEventListener('click', () => {
-            noteApp.archiveNote(el.id * 1);
-            renderAll(noteApp);
-        });
-    });
 }
 // listener for EDIT
 
 const showEditForm = (el, note, noteApp) => {
     let div = document.createElement('div');
+    div.classList.add('editWindow');
     div.innerHTML = `
-    <label for="editName">Name:</label>
+    <div class="input-group mb-3">
+    <span class="input-group-text">Name</span>
     <input type="text" id="editName" value="${note.name}">
-    
-    <label for="editCategory">Category:</label>
-    <select id="editCategory">
-        <option value="Task" ${note.category === 'Task' ? 'selected' : ''}>Task</option>
-        <option value="Random Thought" ${note.category === 'Random Thought' ? 'selected' : ''}>Random Thought</option>
-        <option value="Idea" ${note.category === 'Idea' ? 'selected' : ''}>Idea</option>
-    </select>
-    
-    <label for="editContent">Content:</label>
-    <textarea id="editContent">${note.content}</textarea>
-    
-    <button id="saveChangesBtn">Save Changes</button>
+    <label class="input-group-text" for="inputGroupSelect01">Category</label>
+    <select class="form-select" id="editCategory">
+    <option value="Task">Task</option>
+    <option value="Random Thought">Random Thought</option>
+    <option value="Idea">Idea</option>
+  </select>
+    <span class="input-group-text">Content</span>
+    <textarea class="form-control" aria-label="With textarea" id="editContent">${note.content}</textarea>
+    <button class="saveChangesBtn">Save Changes</button>
 `;
-    div.querySelector('#saveChangesBtn').addEventListener('click', () => {
+    div.querySelector('.saveChangesBtn').addEventListener('click', () => {
+        isEditOpen = false;
         const editedNote = {
             id: el.id * 1,
-            name: div.querySelector('#editName').value,
+            noteName: div.querySelector('#editName').value,
             category: div.querySelector('#editCategory').value,
             content: div.querySelector('#editContent').value,
         };
-        // console.log(editedNote);
         noteApp.editNote(editedNote);
-        renderNotesTable(noteApp);
-        updateSummaryTable(noteApp);
+        renderAll(noteApp);
     });
     const row = el.closest('tr');
     row.innerHTML = '';
@@ -134,11 +105,82 @@ function updateSummaryTable(noteApp) {
     document.getElementById('ideaArchivedCount').textContent = summary.archived['Idea'];
 }
 
+let divAddNote = document.createElement('div');
+divAddNote.classList.add('createWindow');
+
 function renderAll(noteApp) {
+    divAddNote.innerText = ''; // cleaning error zone for creating note
+
     renderNotesTable(noteApp);
     updateSummaryTable(noteApp);
     renderArchiveNoteTable(noteApp);
+// listener for taking note from ARCHIVE
+    document.querySelectorAll('.unarchive').forEach((el) => {
+        el.addEventListener('click', () => {
+            noteApp.unarchiveNote(el.id * 1);
+            renderAll(noteApp);
+        });
+    });
+    // listener for EDIT
+    document.querySelectorAll('.edit').forEach((el) => {
+        el.addEventListener('click', () => {
+            if (!isEditOpen) {
+                isEditOpen = true;
+                const note = noteApp.getNote(el.id * 1);
+                showEditForm(el, note, noteApp);
+            }
+        });
+    });
+
+    // listener for REMOVE
+    document.querySelectorAll('.remove').forEach((el) => {
+        el.addEventListener('click', () => {
+            noteApp.removeNote(el.id * 1);
+            renderAll(noteApp);
+        });
+    });
+    // listener for adding to ARCHIVE
+    document.querySelectorAll('.archive').forEach((el) => {
+        el.addEventListener('click', () => {
+            noteApp.archiveNote(el.id * 1);
+            renderAll(noteApp);
+        });
+    });
+    // LISTENER FOR CREATING ARCHIVE
+    document.querySelector('.addNote').addEventListener('click', () => {
+        divAddNote.innerHTML = `
+        <div class="input-group mb-3">
+        <span class="input-group-text">Name</span>
+        <input type="text" id="createName">
+        <label class="input-group-text" for="inputGroupSelect01">Category</label>
+        <select class="form-select" id="createCategory">
+        <option value="Task">Task</option>
+        <option value="Random Thought">Random Thought</option>
+        <option value="Idea">Idea</option>
+      </select>
+        <span class="input-group-text">Content</span>
+        <textarea class="form-control" aria-label="With textarea" id="createContent"></textarea>
+        <button class="createButton">Create note</button>
+    `;
+        divAddNote.querySelector('.createButton').addEventListener('click', () => {
+            const createdNote = {
+                name: divAddNote.querySelector('#createName').value,
+                category: divAddNote.querySelector('#createCategory').value,
+                content: divAddNote.querySelector('#createContent').value,
+            };
+            divAddNote.innerHTML = '';
+            try {
+                noteApp.addNote(createdNote);
+                renderAll(noteApp);
+            } catch (error) {
+                console.log(error);
+                divAddNote.innerHTML = 'Error bro :(';
+            }
+        });
+        const divCreateNote = document.getElementsByClassName('createNote')[0];
+        divCreateNote.appendChild(divAddNote);
+    });
 }
 // Search for dates inside a content of note
 
-export { renderNotesTable, updateSummaryTable, renderArchiveNoteTable,renderAll };
+export { renderNotesTable, updateSummaryTable, renderArchiveNoteTable, renderAll };
