@@ -29,15 +29,15 @@ class App {
     getNote(id) {
         return this.notes.find((n) => n.id === id);
     }
-    editNote(args) {
-        console.log(args);
-        let { id, content, category, noteName } = args;
-        if (!content || !['Task', 'Idea', 'Random Thought'].includes(category)) return false;
+    editNote(...args) {
+        let { id, content, category, noteName } = args[0];
+        if (!category || content.length < 10) throw new Error('Content length is to small or no category');
+        if (!content || !['Task', 'Idea', 'Random Thought'].includes(category)) throw new Error('Wrong category');
         const note = this.notes.find((n) => n.id === id);
         if (note) {
-            note.content = content;
-            note.category = category;
-            note.name = noteName;
+            note.content = content || note.content;
+            note.category = category || note.category;
+            note.name = noteName || note.name;
         }
         return this;
     }

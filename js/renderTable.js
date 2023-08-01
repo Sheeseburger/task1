@@ -45,7 +45,7 @@ function renderNotesTable(noteApp) {
             day: 'numeric',
         })}</td>
         <td class="table-dark">${note.category}</td>
-        <td class="table-dark">${note.content.substring(0, 15) + '...'}</td>
+        <td class="table-dark">${note.content.length > 15 ? note.content.substring(0, 15) + '...' : note.content}</td>
         <td class="table-dark">${noteApp.getDatesMentioned(note.content)}</td>
         <td>
           <button class="edit btn btn-warning" id="${note.id}">Edit</button>
@@ -77,13 +77,17 @@ const showEditForm = (el, note, noteApp) => {
 `;
     div.querySelector('.saveChangesBtn').addEventListener('click', () => {
         isEditOpen = false;
-        const editedNote = {
-            id: el.id * 1,
-            noteName: div.querySelector('#editName').value,
-            category: div.querySelector('#editCategory').value,
-            content: div.querySelector('#editContent').value,
-        };
-        noteApp.editNote(editedNote);
+        try {
+            noteApp.editNote({
+                id: el.id * 1,
+                content: div.querySelector('#editContent').value,
+                category: div.querySelector('#editCategory').value,
+                noteName: div.querySelector('#editName').value,
+            });
+        } catch (error) {
+            console.log('something went wrong :(');
+        }
+
         renderAll(noteApp);
     });
     const row = el.closest('tr');
@@ -114,7 +118,7 @@ function renderAll(noteApp) {
     renderNotesTable(noteApp);
     updateSummaryTable(noteApp);
     renderArchiveNoteTable(noteApp);
-// listener for taking note from ARCHIVE
+    // listener for taking note from ARCHIVE
     document.querySelectorAll('.unarchive').forEach((el) => {
         el.addEventListener('click', () => {
             noteApp.unarchiveNote(el.id * 1);
@@ -146,7 +150,7 @@ function renderAll(noteApp) {
             renderAll(noteApp);
         });
     });
-    // LISTENER FOR CREATING ARCHIVE
+    // LISTENER FOR CREATING Note
     document.querySelector('.addNote').addEventListener('click', () => {
         divAddNote.innerHTML = `
         <div class="input-group mb-3">

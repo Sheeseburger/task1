@@ -1,4 +1,4 @@
-import { renderAll, renderNotesTable, updateSummaryTable, renderArchiveNoteTable } from './renderTable.js';
+import { renderAll } from './renderTable.js';
 import { App, Note } from './note.js';
 
 // start of the script
