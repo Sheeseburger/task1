@@ -15,7 +15,7 @@ class App {
     }
     addNote(args) {
         const { content, category, name } = args;
-        if (!name || !content) throw new Error('Missing name or content');
+        if (!name || !content || content.length < 10) throw new Error('Missing name or content or content is to small');
         if (!['Task', 'Idea', 'Random Thought'].includes(category)) throw new Error('We dont support this content');
         this.notes.push({
             id: this.notes.length + this.archivedNotes + 1,
